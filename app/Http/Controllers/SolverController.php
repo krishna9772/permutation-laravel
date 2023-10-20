@@ -69,16 +69,23 @@ class SolverController extends Controller
 
             // print_r("<br/>");
 
-            // die;
-            Result::create([
-                'letter_num' => json_encode($solutions),
-            ]);
+            if (!$request->session()->has('solutions')) {
+                $request->session()->put('solutions',collect($solutions));
+            }
+
+            if(collect($solutions) != $request->session()->get('solutions')){
+            
+                Result::create([
+                    'letter_num' => json_encode($solutions),
+                    'iteration' => $iterations,
+                ]);
+            }
 
             return view('home')->with(['solutions' => $solutions, 'iterations' => $iterations, 'seconds' => $seconds]);
 
         }else{
 
-            return view('home')->with(['solutions' => null, 'iterations' => 0, 'seconds' => 0]);
+            return view('home')->with(['solutions' => $request->session()->get('solutions'), 'iterations' => 0, 'seconds' => 0]);
 
         }
 
