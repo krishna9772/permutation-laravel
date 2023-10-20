@@ -18,3 +18,6 @@ Route::get('/welcome', function () {
 });
 
 Route::get('/',[SolverController::class,'solvePuzzle'])->name('home');
+
+Route::get('go/{action}',[SolverController::class,'solvePuzzle'])->name('action');
+
