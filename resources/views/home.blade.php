@@ -59,7 +59,8 @@
         <section id="loading" class="loading">
              <div id="loading-content" class="loading-content"></div>
         </section>
-        @if(\Request::route()->getName() != 'home')
+        {{-- Change views with the result --}}
+        @if(\Request::route()->getName() != 'home') 
           <div class="d-flex justify-content-end">
               <h6 class="p-2">HIER + GIBT + ES = NEUES</h6>
               <h6 class="p-2">Iterations: {{ number_format($iterations) }}</h6>
@@ -69,10 +70,8 @@
         @else
           <form action="{{route('action','action')}}" method="GET">
             <div class="d-flex justify-content-center">
-              <h6 class="p-2">HIER + GIBT + ES = NEUES</h6>
-              
+              <h6 class="p-2">HIER + GIBT + ES = NEUES</h6>              
               <button class="btn btn-secondary"> Find Solution </button>
-          
             </div>
           </form>
         @endif
@@ -114,6 +113,7 @@
                   
                   @endforeach
                 @endisset
+               
 
         </div>
     </div>

@@ -16,11 +16,4 @@ class Result extends Model
         'iteration',
     ];
 
-    protected function data(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => json_decode($value, true),
-            set: fn ($value) => json_encode($value),
-        );
-    }
 }
