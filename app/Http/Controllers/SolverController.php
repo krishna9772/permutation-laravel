@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Result;
 
-
-use IterTools\Multi;
+use DB;
 
 class SolverController extends Controller
 {
@@ -19,22 +18,20 @@ class SolverController extends Controller
         $this->equation = $equation;
         $this->letters = ['H','I','E','R','G','B','T','S','N','U'];
         $this->solutions = [];
-        $this->iterations = 0;
     }
 
     public function solvePuzzle(Request $request) {
-        $iterations = '';
 
         if($request->action == 'action')
         {
+            
             $list = range(0,9);
+
+            $startTime = microtime(true); // Time Initiated
 
             foreach ($this->pc_permute($list) as $key => $permutation) {
                 $permutations[] = implode(',', $permutation) . PHP_EOL; // Stored the permuted data in array.
             }
-
-            $startTime = microtime(true);
-
 
             foreach ($permutations as $perm) {
 
@@ -60,30 +57,31 @@ class SolverController extends Controller
                 }
 
 
-                $iterations++;
+                $this->iterations++;
             }
         
-            $seconds = microtime(true) - $startTime;
 
-            // print_r($iterations);
+            $request->session()->put('solutions',collect($solutions));
 
-            // print_r("<br/>");
-
-            if (!$request->session()->has('solutions')) {
-                $request->session()->put('solutions',collect($solutions));
-            }
-
-            if(collect($solutions) != $request->session()->get('solutions')){
+            if(collect($solutions) != $request->session()->get('solutions') || Result::count() == 0){
             
                 Result::create([
                     'letter_num' => json_encode($solutions),
-                    'iteration' => $iterations,
+                    'iteration' => $this->iterations,
                 ]);
             }
 
-            return view('home')->with(['solutions' => $solutions, 'iterations' => $iterations, 'seconds' => $seconds]);
+            $seconds = microtime(true) - $startTime; // Execution ended
+
+            return view('home')->with(['solutions' => $solutions, 'iterations' => $this->iterations, 'seconds' => $seconds]);
 
         }else{
+
+                if(!$request->session()->exists('solutions') || $request->session()->exists('solutions') == ' '){
+                    $solutions = Result::take(1)->get()->toArray();
+                    $request->session()->put('solutions',json_decode($solutions[0]['letter_num'],true));
+                }
+            
 
             return view('home')->with(['solutions' => $request->session()->get('solutions'), 'iterations' => 0, 'seconds' => 0]);
 
