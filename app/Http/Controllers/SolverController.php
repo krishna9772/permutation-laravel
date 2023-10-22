@@ -75,7 +75,7 @@ class SolverController extends Controller
 
             return view('home')->with(['solutions' => $solutions, 'iterations' => $this->iterations, 'seconds' => $seconds]);
 
-        }else
+        }else{
                 if($request->session()->exists('solutions') == ' ' || Result::count() == 0){
                     $solutions = Result::take(1)->get()->toArray();
                     $request->session()->put('solutions',json_decode($solutions[0]['letter_num'],true));
