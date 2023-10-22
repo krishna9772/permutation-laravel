@@ -77,7 +77,7 @@
         @endif
 
         <div class="row">
-                @isset($solutions)
+                @if(isset($solutions) && $solutions != ' ')
                   @foreach($solutions as $key => $solution)
                     <div class="col-md-3">
 
@@ -112,7 +112,7 @@
 
                   
                   @endforeach
-                @endisset
+                @endif
                
 
         </div>
